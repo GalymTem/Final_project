@@ -28,20 +28,35 @@ async function startApplication() {
         const selectedFile = fileInput.files[0];
         if (!selectedFile) return;
 
-        displayedImage = await faceapi.bufferToImage(selectedFile);
+        const originalImage = await faceapi.bufferToImage(selectedFile);
+       
+        const fixedWidth = 1000;
+        const fixedHeight = 700; 
+
+        const resizedCanvas = document.createElement("canvas");
+        resizedCanvas.width = fixedWidth;
+        resizedCanvas.height = fixedHeight;
+        const ctx = resizedCanvas.getContext("2d");
+        ctx.drawImage(originalImage, 0, 0, fixedWidth, fixedHeight);
+
+        const resizedImage = new Image();
+        resizedImage.src = resizedCanvas.toDataURL();
+        await new Promise((res) => (resizedImage.onload = res));
+
+        displayedImage = resizedImage;
         wrapper.append(displayedImage);
 
         overlay = faceapi.createCanvasFromMedia(displayedImage);
         wrapper.append(overlay);
 
-        const size = {
+        const displaySize = {
             width: displayedImage.width,
             height: displayedImage.height,
         };
-        faceapi.matchDimensions(overlay, size);
+        faceapi.matchDimensions(overlay, displaySize);
 
         const results = await faceapi
-            .detectAllFaces(displayedImage)
+            .detectAllFaces(resizedCanvas)
             .withFaceLandmarks()
             .withFaceDescriptors();
 
@@ -50,14 +65,18 @@ async function startApplication() {
             return;
         }
 
-        const resizedResults = faceapi.resizeResults(results, size);
+        const resizedResults = faceapi.resizeResults(results, displaySize);
 
         resizedResults.forEach((result) => {
             const match = recognizer.findBestMatch(result.descriptor);
             const box = result.detection.box;
+            const label = match.toString();
+            const isUnknown = label.includes("unknown");
 
             const tag = new faceapi.draw.DrawBox(box, {
-                label: match.toString(),
+                label: label,
+                boxColor: isUnknown ? "red" : "green",
+                lineWidth: 2,
             });
             tag.draw(overlay);
         });
