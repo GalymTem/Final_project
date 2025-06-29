@@ -12,9 +12,11 @@
 <body>
     <h1>Face Recognition</h1>
 
-    <input type="file" id="imageUpload" accept="image/*" />
+    <div class="button-group">
+        <input type="file" id="imageUpload" accept="image/*" />
+        <button id="takePhotoButton">Take Photo</button>
+    </div>
 
-    <button id="takePhotoButton">Take Photo</button>
     <video id="video" width="640" height="480" autoplay muted style="display: none;"></video>
     <canvas id="canvas" style="display: none;"></canvas>
 
