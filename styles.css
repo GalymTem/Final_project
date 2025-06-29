@@ -7,7 +7,7 @@ body {
     padding: 20px;
     font-family: Arial, sans-serif;
     background-color: #4e6384;
-    color: #120707;
+    color: #f1f1f1;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -16,16 +16,48 @@ body {
 
 h1 {
     margin-bottom: 20px;
+    font-size: 2rem;
 }
 
-input[type="file"] {
+.button-group {
+    display: flex;
+    gap: 10px;
     margin-bottom: 20px;
-    padding: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.button-group input[type="file"],
+.button-group button {
+    padding: 10px 15px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.button-group input[type="file"] {
+    background-color: #1f7a8c;
+    color: white;
+}
+
+#takePhotoButton {
+    background-color: #ff6b6b;
+    color: white;
+}
+
+.button-group input[type="file"]:hover,
+#takePhotoButton:hover {
+    background-color: #333;
+    transform: scale(1.05);
 }
 
 #outputContainer {
     position: relative;
     display: inline-block;
+    margin-top: 20px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
 }
 
 canvas {
